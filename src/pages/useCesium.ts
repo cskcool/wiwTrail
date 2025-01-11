@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 const { t } = i18n.global
 // import mode3durl from '@/assets/3dMode/psyduck.gltf?url'
-const viewer = reactive<any>({})
+let viewer = reactive<any>({})
 const rotateAnimationPlayFlag = ref(true)
 const animationPosition = ref<any>({})
 // 控制开始结束更快更慢
