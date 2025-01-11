@@ -1,3 +1,64 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+
+import {
+  animationPosition,
+  cesiumFlyTo,
+  cesiumRotateFly,
+  fasterTraceAnimationPlay,
+  initScene,
+  rotateAnimationPlayFlag,
+  slowerAnimationPlay,
+  startTraceAnimationPlay,
+  stopTraceAnimationPlay,
+  viewer,
+} from './useCesium'
+// import amapTool from '@/utils/amapUtils'
+
+// const showTrailUploader = ref(false)
+
+function callPosition() {
+  rotateAnimationPlayFlag.value = false
+  viewer.dataSources.removeAll()
+  stopTraceAnimationPlay()
+  // amapTool.getPositionuseIp({key: 'ea6eae6fc9da7574fa52aab75cef8537'}).then((res:any) => {
+  //   const ipLocation: string = res.rectangle.split(';')[1]
+  //   const longitude = Number(ipLocation.split(',')[0])
+  //   const latitude = Number(ipLocation.split(',')[1])
+  //   cesiumFlyTo({longitude, latitude })
+  // })
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const latitude = position.coords.latitude
+      const longitude = position.coords.longitude
+      cesiumFlyTo({ longitude, latitude })
+    })
+  }
+  // else {
+  //   console.log('Geolocation is not supported by this browser.')
+  // }
+}
+
+// function toSettingPage() {
+// router.push('/setting');
+// }
+
+// function loadMainScene(uuid: string) {
+// rotateAnimationPlayFlag.value = false
+// getGpxFileUrl({ uuid }).then((res: any) => {
+//   // console.log('====>', params, res.data)
+//   cesiumShowTrace(res.data.data)
+// })
+// }
+
+onMounted(() => {
+  initScene().then(() => {
+    cesiumRotateFly()
+    // })
+  })
+})
+</script>
+
 <template>
   <div id="cesiumBox" class="frame-3d">
     <div class="work-bar">
@@ -16,7 +77,7 @@
       <van-icon v-show="isFullScreen" name="shrink" size="25px" @click="fullScreen"/>
     </div> -->
     </div>
-    <div class="animation-bar" v-if="animationPosition.height">
+    <div v-if="animationPosition.height" class="animation-bar">
       <div class="speed-control">
         <span> {{ $t('home.animation') }}：</span>
         <van-icon name="arrow-left" @click="slowerAnimationPlay" />
@@ -34,71 +95,9 @@
         <span>{{ $t('home.latitude') }}：</span>{{ animationPosition.latitude }}°
       </div>
     </div>
-
   </div>
 </template>
-<script setup lang="ts">
-import { onMounted } from 'vue';
 
-import {
-  viewer,
-  rotateAnimationPlayFlag,
-  animationPosition,
-  initScene,
-  cesiumRotateFly,
-  cesiumFlyTo,
-  stopTraceAnimationPlay,
-  startTraceAnimationPlay,
-  slowerAnimationPlay,
-  fasterTraceAnimationPlay
-} from './useCesium'
-// import amapTool from '@/utils/amapUtils'
-
-// const showTrailUploader = ref(false)
-
-function callPosition() {
-  rotateAnimationPlayFlag.value = false
-  viewer.dataSources.removeAll();
-  stopTraceAnimationPlay()
-  // amapTool.getPositionuseIp({key: 'ea6eae6fc9da7574fa52aab75cef8537'}).then((res:any) => {
-  //   const ipLocation: string = res.rectangle.split(';')[1]
-  //   const longitude = Number(ipLocation.split(',')[0])
-  //   const latitude = Number(ipLocation.split(',')[1])
-  //   cesiumFlyTo({longitude, latitude })
-  // })
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      var latitude = position.coords.latitude;
-      var longitude = position.coords.longitude;
-      cesiumFlyTo({ longitude, latitude })
-    });
-  } else {
-    console.log("Geolocation is not supported by this browser.");
-  }
-}
-
-// function toSettingPage() {
-  // router.push('/setting');
-// }
-
-// function loadMainScene(uuid: string) {
-  // rotateAnimationPlayFlag.value = false
-  // getGpxFileUrl({ uuid }).then((res: any) => {
-  //   // console.log('====>', params, res.data)
-  //   cesiumShowTrace(res.data.data)
-  // })
-// }
-
-onMounted(() => {
-  initScene().then(() => {
-    cesiumRotateFly()
-    // })
-  }).catch(e => {
-    console.log('ERR:', e)
-  });
-});
-
-</script>
 <style scoped lang="less">
 .frame-3d {
   height: 100vh;

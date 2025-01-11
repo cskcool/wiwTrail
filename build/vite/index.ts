@@ -16,9 +16,9 @@ import Sitemap from 'vite-plugin-sitemap'
 import VueDevTools from 'vite-plugin-vue-devtools'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { loadEnv } from 'vite'
-import cesium from 'vite-plugin-cesium';
-// 打包到本地
-import { viteSingleFile } from 'vite-plugin-singlefile';
+import cesium from 'vite-plugin-cesium'
+// 打包到单个文件
+// import { viteSingleFile } from 'vite-plugin-singlefile';
 import { createViteVConsole } from './vconsole'
 
 export function createVitePlugins(mode: string) {
@@ -33,8 +33,8 @@ export function createVitePlugins(mode: string) {
     }),
 
     vue(),
-    // cesium(),
-    viteSingleFile(),
+    cesium(),
+    // viteSingleFile(),
     // https://github.com/jbaubree/vite-plugin-sitemap
     Sitemap({
       outDir: env.VITE_APP_OUT_DIR || 'dist',
@@ -101,6 +101,9 @@ export function createVitePlugins(mode: string) {
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'safari-pinned-tab.svg'],
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 设置为 10 MiB
+      },
       manifest: {
         name: 'vue3-vant-mobile',
         short_name: 'vue3-vant-mobile',
